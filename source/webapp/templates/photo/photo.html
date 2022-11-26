@@ -19,16 +19,75 @@
             {% endif %}
             <p class="card-text">{{ photo.description }}</p>
             <p class="card-text" style="font-size: 12px; color: gray;">Created at: {{ photo.created_at }}</p>
-            <a href="#" style="text-decoration: none">
+            {% if user.is_authenticated %}
+            <a href="{% url 'profile' photo.author.pk %}" style="text-decoration: none">
                 <p class="card-text">{{ photo.author|capfirst }}</p>
             </a>
-            <a href="{% url 'edit_photo' photo.pk %}">edit</a>
-            <a href="{% url 'delete_photo' photo.pk %}">delete</a>
+            <div class="d-flex">
+            {% if photo.author == request.user or request.user.is_superuser %}
+                <a href="{% url 'edit_photo' photo.pk %}"><i class="bi bi-pencil-square" style="font-size: 2rem; color: black;"></i></a>
+                <a href="{% url 'delete_photo' photo.pk %}"><i class="bi bi-trash" style="font-size: 2rem; color: black;"></i></a>
+            {% endif %}
+                {% if photo.author == request.user %}
+                {% else %}
+                <button id="favourite_id" data-bs-dismiss="modal" type="button"
+                                        onclick="addFavourite(event)" data-name="{{ photo.pk }}" value="{{ request.user.pk }}"
+                                        class="btn btn-success" content="">Add to favourite<div id="place"></div>
+                </button>
+                {% endif %}
+            {% endif %}
+            </div>
         </div>
     </div>
-        {% for user in photo.users.all %}
-            <a href="#">{{ user.user }}</a>
-        {% endfor %}
+    <div class="container" style="margin-bottom: 190px;">
+    {% if photo.users.all %}
+      <div class="table">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Users who add photo to favourite</th>
+              </tr>
+            </thead>
+            <tbody>
+             {% for i in photo.users.all %}
+                 <tr>
+                     <td class="text"><p><a href="{% url 'profile' i.user.pk %}" class="button cancel">{{ i.user }}</a></p><br/></td>
+                 </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+      </div>
+    {% endif %}
+</div>
+    <script>
+        function successResult(data) {
+          $('#place').html(`<p>${data.answer}`)
+        };
+        function errorResult(data) {
+            text = JSON.parse(data.responseText);
+            const answer = `<span style="color:red">${text.error}</span>`;
+            $('#place').html(answer);
+        };
+        function addFavourite(event) {
+            event.preventDefault()
+            let answer = {
+                photo: event.target.dataset.name,
+                user: event.target.value
+            }
+            console.log(answer)
+            var $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
+            $.ajax({
+                url: `http://localhost:8000/api/add_favourite/`,
+                method: 'POST',
+                headers: {"X-CSRFToken": $crf_token},
+                data: JSON.stringify(answer),
+                dataType: "json",
+                contentType: "application/json",
+                success: successResult,
+                error: errorResult
+            })
+        }
+    </script>
 {% endblock %}
 
 

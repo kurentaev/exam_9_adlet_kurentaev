@@ -14,14 +14,30 @@
                 <div class="d-flex">
                     <h1>User profile</h1>
                 </div>
-                <div style="margin-bottom: 410px;">
+                <div style="margin-bottom: 50px;">
                     <p class="p-0 m-0 fw-bold">Username: {{ user_obj.username }}</p>
                 </div>
             </div>
         </div>
     </div>
-    {% for photo in user_obj.photo.all %}
-        {{ photo }}
-        <a href="#">{{ photo.user }}</a>
-    {% endfor %}
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% if user_obj.photo.all %}
+            <h2 class="text-center clear mt-4 mb-4">Favourite photos:</h2>
+                {% for photo in user_obj.photo.all %}
+            <h2></h2>
+                <div class="col">
+                    <div class="">
+                        <div class="card-body">
+                            <a href="{% url 'photo' photo.photo.pk %}">
+                                <img class="card-img-right flex-auto d-none d-md-block"
+                                     data-src="{{ photo.photo.photo.url }}" alt="Thumbnail [200x250]"
+                                     style="width: 350px; height: 300px;" src="{{ photo.photo.photo.url }}"
+                                     data-holder-rendered="true">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
 {% endblock %}
