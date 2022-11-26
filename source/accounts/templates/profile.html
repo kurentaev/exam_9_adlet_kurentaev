@@ -22,6 +22,6 @@
     </div>
     {% for photo in user_obj.photo.all %}
         {{ photo }}
-        <a href="#">{{ user.user }}</a>
+        <a href="#">{{ photo.user }}</a>
     {% endfor %}
 {% endblock %}

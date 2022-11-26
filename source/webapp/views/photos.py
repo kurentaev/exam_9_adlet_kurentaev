@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -38,22 +38,32 @@ class AddPhotoView(LoginRequiredMixin, CreateView):
         return reverse('photo', kwargs={'pk': self.object.pk})
 
 
-class EditPhotoView(LoginRequiredMixin, UpdateView):
+class EditPhotoView(PermissionRequiredMixin, UpdateView):
     template_name = 'photo/add_photo.html'
     model = Photo
     form_class = PhotoForm
+    permission_required = 'webapp.change_photo'
 
     def get_success_url(self):
         return reverse('photo', kwargs={'pk': self.object.pk})
 
+    def has_permission(self):
+        return super().has_permission() or self.get_object().author == self.request.user \
+               or self.request.user.is_superuser
 
-class DeletePhotoView(LoginRequiredMixin, DeleteView):
+
+class DeletePhotoView(PermissionRequiredMixin, DeleteView):
     template_name = 'photo/delete_photo.html'
     model = Photo
     context_object_name = 'vacancy'
+    permission_required = 'webapp.delete_photo'
 
     def get_success_url(self):
         return reverse('index')
+
+    def has_permission(self):
+        return super().has_permission() or self.get_object().author == self.request.user \
+               or self.request.user.is_superuser
 
 
 class ChoosePhotoView(CreateView):
