@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+    <div class="card" style="width: 100%; margin: 5px">
+        <div class="card-body">
+            {% if photo.photo.url %}
+            <a href="#" style="text-decoration: none">
+                <img src="{{ photo.photo.url }}" alt="" style="height: 150px; width: 150px; padding-top: 0px;"
+                         class="me-3 rounded-circle">
+            </a>
+            {% else %}
+            <div>
+                <h5 class="card-title">
+                    <img src="{% static '../uploads/logo.png' %}" alt="" style="height: 150px; width: 150px;" class="me-3 rounded-circle">
+                </h5>
+            </div>
+            {% endif %}
+            <p class="card-text">{{ photo.description }}</p>
+            <p class="card-text" style="font-size: 12px; color: gray;">Created at: {{ photo.created_at }}</p>
+            <a href="#" style="text-decoration: none">
+                <p class="card-text">{{ photo.author|capfirst }}</p>
+            </a>
+            <a href="{% url 'edit_photo' photo.pk %}">edit</a>
+            <a href="{% url 'delete_photo' photo.pk %}">delete</a>
+        </div>
+    </div>
+
+{% endblock %}
+
+

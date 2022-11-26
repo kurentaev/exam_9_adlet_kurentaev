@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+    {% for photo in photos %}
+        <div class="card" style="width: 100%; margin: 5px">
+            <div class="card-body">
+                {% if photo.photo %}
+                <a href="{% url 'photo' photo.pk %}" style="text-decoration: none">
+                    <img src="{{ photo.photo.url }}" alt="" style="height: 150px; width: 150px; padding-top: 0px;"
+                             class="me-3 rounded-circle">
+                </a>
+                {% else %}
+                <div>
+                    <h5 class="card-title">
+                        <img src="{% static '../uploads/logo.png' %}" alt="" style="height: 150px; width: 150px;" class="me-3 rounded-circle">
+                    </h5>
+                </div>
+                {% endif %}
+                <p class="card-text">{{ photo.description }}</p>
+                <p class="card-text" style="font-size: 12px; color: gray;">Created at: {{ photo.created_at }}</p>
+                <a href="#" style="text-decoration: none">
+                    <p class="card-text">{{ photo.author|capfirst }}</p>
+                </a>
+            </div>
+        </div>
+    {% endfor %}
+    {% if photos|length == 0 %}
+        <h5 class="card-title" style="margin-bottom: 550px; text-align: center; width: 100%;">
+            There is no photo to display
+        </h5>
+    {% endif %}
+{% endblock %}
+
+

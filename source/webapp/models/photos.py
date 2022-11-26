@@ -34,3 +34,18 @@ class Photo(models.Model):
         verbose_name = "Photo"
         verbose_name_plural = "Photos"
         ordering = ['-created_at', ]
+
+
+class FavouritePhotos(models.Model):
+    user = models.ForeignKey(
+        to=get_user_model(),
+        on_delete=models.CASCADE,
+        related_name='photo',
+        verbose_name='Author'
+    )
+    photo = models.ForeignKey(
+        to=Photo,
+        on_delete=models.CASCADE,
+        related_name='users',
+        verbose_name='Photo'
+    )

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        {% if vacancies_list|length == 0 %}
+            <h5 class="card-title" style="margin-bottom: 550px; text-align: center; width: 100%;">
+                Нет вакансии для отображения
+            </h5>
+        {% else %}
+        <div class="d-flex flex-row flex-wrap" style="margin-bottom: 380px;">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">Название позиции</th>
+                    <th scope="col">Дата обновления</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for vacancy in vacancies_list %}
+                    <tr>
+                        <td class="col-3">
+                            <a class="list-unstyled text-dark" href="{% url 'vacancy' user.pk vacancy.pk %} ">
+                                {{ vacancy.position }}
+                            </a>
+                        </td>
+                        {% if not vacancy.updated_at %}
+                            <td class="col-3"> ---- / -- / --</td>
+                        {% else %}
+                            <td class="col-3">{{ vacancy.updated_at }}</td>
+                        {% endif %}
+                        <td class="col-2">
+                            {% if user_obj == user %}
+                                <form action="" method="get">
+                                    <input type="hidden" class="btn btn-primary" name="vacancy_pk"
+                                           value="{{ vacancy.pk }}">
+                                    {% if vacancy.is_hidden %}
+                                        <input type="submit" class="btn btn-primary" name="activate"
+                                               value="Опубликовать">
+                                    {% else %}
+                                        <input type="submit" class="btn btn-primary" name="deactivate"
+                                               value="Снять с публикации">
+                                    {% endif %}
+                                </form>
+                            {% endif %}
+                        </td>
+                        <td class="col-2">
+                            <form action="" method="get">
+                                <input type="hidden" name="vacancy_pk"
+                                       value="{{ vacancy.pk }}">
+                                <input type="submit" class="btn btn-primary mr-3" name="refresh"
+                                       value="Обновить">
+                            </form>
+                        </td>
+                        <td class="col-1">
+                            <a href="{% url 'delete_vacancy' user.pk vacancy.pk %}" class="btn btn-danger">Удалить вакансию</a><br>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+
