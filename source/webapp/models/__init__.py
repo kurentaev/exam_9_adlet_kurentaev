@@ -1,1 +1,1 @@
-from .photos import Photo
+from .photos import Photo, FavouritePhotos

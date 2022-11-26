@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Пользователь{% endblock %}
+
+{% block menu %}
+
+{% endblock %}
+
+{% block content %}
+    <div class="ps-3">
+        <div class="d-flex">
+            <div class="ms-3 ps-3 d-flex flex-column">
+                <div class="d-flex">
+                    <h1>User profile</h1>
+                </div>
+                <div style="margin-bottom: 410px;">
+                    <p class="p-0 m-0 fw-bold">Username: {{ user_obj.username }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% for photo in user_obj.photo.all %}
+        {{ photo }}
+        <a href="#">{{ user.user }}</a>
+    {% endfor %}
+{% endblock %}

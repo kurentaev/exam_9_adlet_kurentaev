@@ -26,7 +26,9 @@
             <a href="{% url 'delete_photo' photo.pk %}">delete</a>
         </div>
     </div>
-
+        {% for user in photo.users.all %}
+            <a href="#">{{ user.user }}</a>
+        {% endfor %}
 {% endblock %}
 
 

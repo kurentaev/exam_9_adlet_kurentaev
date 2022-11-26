@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from webapp.models import Photo
+from webapp.models import Photo, FavouritePhotos
 from webapp.forms.photo import PhotoForm
 
 
@@ -56,3 +56,16 @@ class DeletePhotoView(LoginRequiredMixin, DeleteView):
         return reverse('index')
 
 
+class ChoosePhotoView(CreateView):
+    model = FavouritePhotos
+
+    def post(self, request, *args, **kwargs):
+        photo_pk = kwargs.get('pk')
+        photo = get_object_or_404(Photo, pk=photo_pk)
+        if not self.model.objects.filter(photo_id=photo_pk, author_id=self.request.user.pk):
+            self.model.objects.create(photo_id=photo_pk, author_id=self.request.user.pk)
+            photo.save()
+        else:
+            photo.save()
+            self.model.objects.filter(photo_id=photo_pk, author_id=self.request.user.pk).delete()
+        return redirect(request.META.get('HTTP_REFERER'))
